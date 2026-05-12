@@ -834,13 +834,24 @@ def run_casci_pipeline(compound: dict, mol: gto.Mole, level: dict,
         h2 = ao2mo.restore(1, h2_raw, n_active_orb)
 
         # ── Jordan-Wigner transform ──
-        # CRITICAL: PySCF returns ERIs in chemist convention (pq|rs),
-        # OpenFermion InteractionOperator expects physicist convention <pq|rs>.
-        # Conversion: h2_phys[p,q,r,s] = h2_chem[p,r,q,s] = h2.transpose(0,2,1,3)
-        # (Ref: openfermion-pyscf uses einsum ijkl->iljk, equivalent for real symmetric ERIs)
-        one_body = h1[:n_active_orb, :n_active_orb]
-        two_body = np.asarray(h2.transpose(0, 2, 1, 3))  # chemist -> physicist
-        ham_op = InteractionOperator(float(e_core), one_body, 0.5 * two_body)
+        # PySCF integrals are in SPATIAL orbital basis (n_orb × n_orb).
+        # OpenFermion InteractionOperator expects SPIN orbital basis (2*n_orb × 2*n_orb).
+        #
+        # PySCF returns ERIs in chemist convention: h2[p,q,r,s] = (pq|rs)
+        # OpenFermion uses its own convention: h[p,q,r,s] = (ps|qr)
+        # Conversion: chemist.transpose(0, 2, 3, 1)
+        # (Ref: openfermionpyscf/_run_pyscf.py compute_integrals())
+        #
+        # Then: spinorb_from_spatial() expands spatial→spin orbitals
+        # Finally: InteractionOperator gets 0.5 * spin_orbital_tensor
+        h1_spatial = h1[:n_active_orb, :n_active_orb]
+        h2_of = np.asarray(h2.transpose(0, 2, 3, 1))  # chemist → OpenFermion convention
+
+        # Spin orbital expansion (using OpenFermion's convention)
+        from openfermion.chem.molecular_data import spinorb_from_spatial
+        h1_so, h2_so = spinorb_from_spatial(h1_spatial, h2_of)
+
+        ham_op = InteractionOperator(float(e_core), h1_so, 0.5 * h2_so)
         qubit_ham = jordan_wigner(ham_op)
 
         pauli_terms = []
