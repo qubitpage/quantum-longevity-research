@@ -834,8 +834,12 @@ def run_casci_pipeline(compound: dict, mol: gto.Mole, level: dict,
         h2 = ao2mo.restore(1, h2_raw, n_active_orb)
 
         # ── Jordan-Wigner transform ──
+        # CRITICAL: PySCF returns ERIs in chemist convention (pq|rs),
+        # OpenFermion InteractionOperator expects physicist convention <pq|rs>.
+        # Conversion: h2_phys[p,q,r,s] = h2_chem[p,r,q,s] = h2.transpose(0,2,1,3)
+        # (Ref: openfermion-pyscf uses einsum ijkl->iljk, equivalent for real symmetric ERIs)
         one_body = h1[:n_active_orb, :n_active_orb]
-        two_body = h2
+        two_body = np.asarray(h2.transpose(0, 2, 1, 3))  # chemist -> physicist
         ham_op = InteractionOperator(float(e_core), one_body, 0.5 * two_body)
         qubit_ham = jordan_wigner(ham_op)
 
