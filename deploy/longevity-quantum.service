@@ -1,0 +1,16 @@
+[Unit]
+Description=Longevity Quantum Platform (QubitPage OS)
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/longevity-quantum
+Environment="PATH=/opt/longevity-quantum/.venv/bin:/usr/local/bin:/usr/bin"
+EnvironmentFile=/opt/longevity-quantum/.env
+ExecStart=/opt/longevity-quantum/.venv/bin/python src/app.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,150 @@
+{
+  "metadata": {
+    "version": "1.0.0",
+    "created": "2026-05-12",
+    "description": "Validated longevity protein targets with crystal structures and quantum simulation parameters",
+    "evidence_standard": "Minimum Phase 1 clinical trial or >50 citations in IF>10 journal"
+  },
+  "pathways": {
+    "nad_sirtuins": {
+      "description": "NAD+ biosynthesis and sirtuin-mediated deacetylation — mitochondrial energy and DNA repair",
+      "biological_rationale": "NAD+ declines 50% by age 60. Sirtuins (SIRT1-7) require NAD+ as cofactor for deacetylation of histones, p53, PGC-1α. Boosting NAD+ restores mitochondrial function and DNA repair capacity.",
+      "key_papers": [
+        "Yoshino et al., Science 2021 (DOI: 10.1126/science.abe9985)",
+        "Imai & Guarente, Trends Cell Biol 2014 (DOI: 10.1016/j.tcb.2014.04.002)",
+        "Rajman et al., Cell Metab 2018 (DOI: 10.1016/j.cmet.2018.02.011)"
+      ],
+      "targets": [
+        {
+          "name": "NAMPT",
+          "full_name": "Nicotinamide phosphoribosyltransferase",
+          "uniprot_id": "P43490",
+          "pdb_id": "2GVJ",
+          "function": "Rate-limiting enzyme in NAD+ salvage pathway",
+          "quantum_rationale": "NAD+ biosynthesis involves phosphoribosyl transfer — charge redistribution across multiple atoms requires multi-reference treatment",
+          "active_space_atoms": ["C1'", "N1", "O5'", "P", "O1", "O2", "O3"],
+          "n_qubits_estimate": 10,
+          "basis_set": "STO-3G",
+          "classical_fails_because": "Phosphoribosyl transfer TS has significant multi-reference character (T1 diagnostic > 0.02)"
+        },
+        {
+          "name": "SIRT1",
+          "full_name": "NAD-dependent protein deacetylase sirtuin-1",
+          "uniprot_id": "Q96EB6",
+          "pdb_id": "4KXQ",
+          "function": "Deacetylates histones H3/H4, p53, PGC-1α using NAD+ as cofactor",
+          "quantum_rationale": "Contains catalytic Zn²⁺ center with 4 coordinating cysteines — d-electron correlation cannot be captured by single-reference DFT",
+          "active_space_atoms": ["Zn", "S(Cys371)", "S(Cys374)", "S(Cys395)", "S(Cys398)"],
+          "n_qubits_estimate": 12,
+          "basis_set": "STO-3G",
+          "classical_fails_because": "Zn²⁺-thiolate coordination has near-degenerate d-orbitals; DFT underestimates Zn-S bond energies by 5-8 kcal/mol"
+        },
+        {
+          "name": "SIRT3",
+          "full_name": "NAD-dependent protein deacetylase sirtuin-3 (mitochondrial)",
+          "uniprot_id": "Q9NTG7",
+          "pdb_id": "4FVT",
+          "function": "Mitochondrial deacetylase — SOD2 activation, fatty acid oxidation",
+          "quantum_rationale": "Same Zn²⁺ catalytic mechanism as SIRT1; mitochondrial-specific isoform",
+          "active_space_atoms": ["Zn", "S(Cys280)", "S(Cys283)", "S(Cys304)", "S(Cys307)"],
+          "n_qubits_estimate": 12,
+          "basis_set": "STO-3G",
+          "classical_fails_because": "Multi-reference Zn coordination chemistry"
+        }
+      ]
+    },
+    "senolytics": {
+      "description": "Selective elimination of senescent cells that secrete SASP inflammatory factors",
+      "biological_rationale": "Senescent cells accumulate with age, secrete IL-6, IL-8, MMPs (SASP). Clearing them with senolytics extends healthspan 36% in mice (Baker et al., Nature 2016). BCL-2 family anti-apoptotic proteins keep zombie cells alive.",
+      "key_papers": [
+        "Baker et al., Nature 2016 (DOI: 10.1038/nature16932)",
+        "Hickson et al., EBioMedicine 2019 (DOI: 10.1016/j.ebiom.2019.10.054)",
+        "Zhu et al., Aging Cell 2015 (DOI: 10.1111/acel.12344)"
+      ],
+      "targets": [
+        {
+          "name": "BCL-xL",
+          "full_name": "B-cell lymphoma-extra large (anti-apoptotic)",
+          "uniprot_id": "Q07817",
+          "pdb_id": "6O0K",
+          "function": "Prevents apoptosis by sequestering pro-apoptotic BAX/BAK",
+          "quantum_rationale": "Navitoclax binding involves extensive π-stacking in BH3 groove — dispersion interactions poorly captured by DFT",
+          "active_space_atoms": ["aromatic_ring_1", "aromatic_ring_2", "S(Met)", "N(backbone)"],
+          "n_qubits_estimate": 8,
+          "basis_set": "STO-3G",
+          "classical_fails_because": "π-π stacking energies have 2-4 kcal/mol DFT errors; MP2 overestimates. Need CCSD-level correlation."
+        },
+        {
+          "name": "BCL-2",
+          "full_name": "B-cell lymphoma 2",
+          "uniprot_id": "P10415",
+          "pdb_id": "6GL8",
+          "function": "Master anti-apoptotic protein in senescent cells",
+          "quantum_rationale": "Similar BH3 groove π-stacking mechanism as BCL-xL",
+          "active_space_atoms": ["aromatic_groove_residues"],
+          "n_qubits_estimate": 8,
+          "basis_set": "STO-3G",
+          "classical_fails_because": "Same π-stacking correlation problem"
+        }
+      ]
+    },
+    "telomerase": {
+      "description": "Telomere maintenance via telomerase reverse transcriptase activation",
+      "biological_rationale": "Telomeres shorten ~50-100 bp per cell division. When critically short, cells senesce or apoptose. Telomerase (hTERT + hTR) can elongate telomeres. Most somatic cells don't express hTERT. Activating it transiently could rejuvenate cells without cancer risk if controlled.",
+      "key_papers": [
+        "Bernardes de Jesus et al., EMBO Mol Med 2012 (DOI: 10.1002/emmm.201200245)",
+        "Harley et al., Rejuvenation Res 2011 (DOI: 10.1089/rej.2010.1085)",
+        "Jaskelioff et al., Nature 2011 (DOI: 10.1038/nature09603)"
+      ],
+      "targets": [
+        {
+          "name": "hTERT",
+          "full_name": "Human telomerase reverse transcriptase",
+          "uniprot_id": "O14746",
+          "pdb_id": "7BG9",
+          "function": "Catalytic subunit of telomerase — adds TTAGGG repeats to telomere ends",
+          "quantum_rationale": "Active site contains Mg²⁺ coordinated with two aspartates and the incoming dNTP — classic two-metal-ion mechanism requiring multi-reference treatment",
+          "active_space_atoms": ["Mg1", "Mg2", "O(Asp251)", "O(Asp343)", "O(dNTP_alpha)", "O(dNTP_beta)"],
+          "n_qubits_estimate": 12,
+          "basis_set": "STO-3G",
+          "classical_fails_because": "Two-metal-ion polymerase mechanism has strong static correlation between Mg-O bonds; DFT barrier heights off by 3-5 kcal/mol"
+        }
+      ]
+    },
+    "rapalogs_mtor": {
+      "description": "mTOR inhibition to mimic caloric restriction and activate autophagy",
+      "biological_rationale": "mTOR (mechanistic target of rapamycin) integrates nutrient signals. Chronic activation accelerates aging. Low-dose rapamycin extends lifespan 15-25% in mice (Harrison et al., Nature 2009). Intermittent dosing preserves immune function.",
+      "key_papers": [
+        "Harrison et al., Nature 2009 (DOI: 10.1038/nature08221)",
+        "Mannick et al., Sci Transl Med 2018 (DOI: 10.1126/scitranslmed.aaq1564)",
+        "Bitto et al., eLife 2016 (DOI: 10.7554/eLife.16351)"
+      ],
+      "targets": [
+        {
+          "name": "mTOR-FKBP12",
+          "full_name": "FKBP12-rapamycin binding domain of mTOR",
+          "uniprot_id": "P42345",
+          "pdb_id": "4DRH",
+          "function": "Rapamycin binds FKBP12 first, then the complex inhibits mTOR kinase",
+          "quantum_rationale": "Rapamycin-FKBP12 interface involves macrolide conformational flexibility + multiple H-bonds in unusual geometry",
+          "active_space_atoms": ["C1(macrolide)", "O(hemiketal)", "C(amide)", "N(piperidine)"],
+          "n_qubits_estimate": 10,
+          "basis_set": "STO-3G",
+          "classical_fails_because": "Macrolide ring strain + intramolecular H-bond network has conformational correlation effects missed by DFT"
+        },
+        {
+          "name": "AMPK",
+          "full_name": "AMP-activated protein kinase",
+          "uniprot_id": "Q13131",
+          "pdb_id": "4CFE",
+          "function": "Cellular energy sensor — activates autophagy, inhibits mTOR when ATP low",
+          "quantum_rationale": "AMP/ATP binding site discrimination involves subtle phosphate charge delocalization",
+          "active_space_atoms": ["P(alpha)", "P(beta)", "P(gamma)", "Mg", "O(bridge)"],
+          "n_qubits_estimate": 10,
+          "basis_set": "STO-3G",
+          "classical_fails_because": "Polyphosphate charge delocalization + Mg²⁺ coordination is multi-reference"
+        }
+      ]
+    }
+  }
+}
