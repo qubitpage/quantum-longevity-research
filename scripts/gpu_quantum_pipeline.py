@@ -39,7 +39,7 @@ DATA_DIR.mkdir(exist_ok=True)
 RESULTS_DIR.mkdir(exist_ok=True)
 
 # IBM Quantum config
-IBM_TOKEN = os.environ.get("IBM_QUANTUM_TOKEN", "EPhwbJpVQ2V_XVyZ3__GkWz8yy6p4jokLpkhZCeBNI3Z")
+IBM_TOKEN = os.environ.get("IBM_QUANTUM_TOKEN", "")
 IBM_BACKENDS = ["ibm_fez", "ibm_marrakesh", "ibm_kingston"]
 
 

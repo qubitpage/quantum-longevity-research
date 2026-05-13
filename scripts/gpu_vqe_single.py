@@ -17,7 +17,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(me
 logger = logging.getLogger(__name__)
 
 # Config
-IBM_TOKEN = "EPhwbJpVQ2V_XVyZ3__GkWz8yy6p4jokLpkhZCeBNI3Z"
+IBM_TOKEN = os.environ.get("IBM_QUANTUM_TOKEN", "")
 TARGET_BACKEND = "ibm_marrakesh"  # best result last time (-75.011 Ha)
 MAX_VQE_ITERS = 15  # limit to save quantum time
 SHOTS = 4096

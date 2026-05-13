@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Retrieve actual results from today's VQE jobs on IBM Quantum."""
+import os
 from qiskit_ibm_runtime import QiskitRuntimeService
 
-token = "EPhwbJpVQ2V_XVyZ3__GkWz8yy6p4jokLpkhZCeBNI3Z"
+token = os.environ["IBM_QUANTUM_TOKEN"]
 svc = QiskitRuntimeService(channel="ibm_quantum_platform", token=token)
 
 # Today's jobs (first 5 are from today's estimator runs)

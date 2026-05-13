@@ -34,9 +34,13 @@ print()
 print("=" * 50)
 print("IBM QUANTUM CHECK")
 print("=" * 50)
+import os
 from qiskit_ibm_runtime import QiskitRuntimeService
-token = "EPhwbJpVQ2V_XVyZ3__GkWz8yy6p4jokLpkhZCeBNI3Z"
-svc = QiskitRuntimeService(channel="ibm_quantum_platform", token=token)
+token = os.environ.get("IBM_QUANTUM_TOKEN", "")
+if not token:
+    print("IBM_QUANTUM_TOKEN not set, skipping quantum check")
+else:
+    svc = QiskitRuntimeService(channel="ibm_quantum_platform", token=token)
 backends = svc.backends()
 print(f"Connected! {len(backends)} backends:")
 for b in backends:
